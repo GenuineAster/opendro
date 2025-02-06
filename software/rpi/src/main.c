@@ -2,16 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "config.h"
 #include "dro.h"
 #include "ui.h"
 
-typedef struct opendro_config_t {
-	bool display_readout;
-} opendro_config_t;
 
-void populate_default_config(opendro_config_t *config) {
-	config->display_readout = true;
-}
 
 int main(int argc, char **argv) {
 	opendro_config_t config;
