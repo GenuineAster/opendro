@@ -6,7 +6,7 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
 	)
 endif()
 
-add_executable(opendro-rpi-gui src/main.c src/dro.c)
+add_executable(opendro-rpi-gui src/main.c src/dro.c src/ui.c)
 target_link_libraries(opendro-rpi-gui SDL3)
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")

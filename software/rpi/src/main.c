@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "dro.h"
+#include "ui.h"
 
 int main(int argc, char **argv) {
 	dro_t dro;
@@ -27,13 +28,22 @@ int main(int argc, char **argv) {
 
 	struct SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
 
+	ui_t ui;
+	init_ui(&ui, renderer);
+
 	int window_size_x, window_size_y;
 	SDL_GetWindowSize(window, &window_size_x, &window_size_y);
 
 	bool open = true;
 	while (open) {
+		ui_frame(&ui);
+
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
+			if (ui_handle_input(&ui, &event)) {
+				continue;
+			}
+
 			switch (event.common.type) {
 			case SDL_EVENT_WINDOW_CLOSE_REQUESTED: {
 				open = false;
@@ -78,16 +88,10 @@ int main(int argc, char **argv) {
 			SDL_RenderDebugText(renderer, 10 / 2.f, axis_text_offset / 2.f, buf);
 			SDL_SetRenderScale(renderer, 1.f, 1.f);
 
-			SDL_SetRenderDrawColor(renderer, 125, 125, 125, 255);
-			SDL_FRect button_rect = {.x = 10.f + 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f, .y = axis_text_offset - 2.f, .w = 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .h = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 4.f};
-			SDL_RenderFillRect(renderer, &button_rect);
-			SDL_SetRenderDrawColor(renderer, 185, 185, 185, 255);
-			SDL_RenderRect(renderer, &button_rect);
-
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-			SDL_SetRenderScale(renderer, 2.f, 2.f);
-			SDL_RenderDebugText(renderer, (button_rect.x + 2.f)/2.f, (button_rect.y + 2.f)/2.f, "REF");
-			SDL_SetRenderScale(renderer, 1.f, 1.f);
+			ui_rect_t button_rect = {.x = 10.f + 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f, .y = axis_text_offset - 2.f, .w = 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .h = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 4.f};
+			if (ui_button(&ui, button_rect, "REF")) {
+				dro.axes[axis].ref = dro.axes[axis].curr_pos;
+			}
 
 			axis_text_offset += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 8.f;
 		}
