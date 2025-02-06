@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
 				dro.axes[axis].ref = dro.axes[axis].curr_pos;
 			}
 
-			axis_text_offset += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 8.f;
+			axis_text_offset += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
 		}
 
 		SDL_RenderPresent(renderer);
