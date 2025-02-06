@@ -110,6 +110,33 @@ int main(int argc, char **argv) {
 			axis_text_offset += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
 		}
 
+		const float axis_skip = 10.f + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f * MAX_NUM_AXES + 10.f;
+
+		// draw keypad
+		ui_rect_t rect_1 = {.x = 10.f, .y = axis_skip, .w = 80, .h = 80};
+		ui_button(&ui, rect_1, "1");
+		ui_rect_t rect_2 = {.x = 10.f + 80.f + 10.f, .y = axis_skip, .w = 80, .h = 80};
+		ui_button(&ui, rect_2, "2");
+		ui_rect_t rect_3 = {.x = 10.f + (80.f + 10.f) * 2.f, .y = axis_skip, .w = 80, .h = 80};
+		ui_button(&ui, rect_3, "3");
+
+		ui_rect_t rect_4 = {.x = 10.f, .y = axis_skip + 80.f + 10.f, .w = 80, .h = 80};
+		ui_button(&ui, rect_4, "4");
+		ui_rect_t rect_5 = {.x = 10.f + 80.f + 10.f, .y = axis_skip + 80.f + 10.f, .w = 80, .h = 80};
+		ui_button(&ui, rect_5, "5");
+		ui_rect_t rect_6 = {.x = 10.f + (80.f + 10.f) * 2.f, .y = axis_skip + 80.f + 10.f, .w = 80, .h = 80};
+		ui_button(&ui, rect_6, "6");
+
+		ui_rect_t rect_7 = {.x = 10.f, .y = axis_skip + (80.f + 10.f) * 2.f, .w = 80, .h = 80};
+		ui_button(&ui, rect_7, "7");
+		ui_rect_t rect_8 = {.x = 10.f + 80.f + 10.f, .y = axis_skip + (80.f + 10.f) * 2.f, .w = 80, .h = 80};
+		ui_button(&ui, rect_8, "8");
+		ui_rect_t rect_9 = {.x = 10.f + (80.f + 10.f) * 2.f, .y = axis_skip + (80.f + 10.f) * 2.f, .w = 80, .h = 80};
+		ui_button(&ui, rect_9, "9");
+
+		ui_rect_t rect_0 = {.x = 10.f + 80.f + 10.f, .y = axis_skip + (80.f + 10.f) * 3.f, .w = 80, .h = 80};
+		ui_button(&ui, rect_0, "0");
+
 		SDL_RenderPresent(renderer);
 	}
 
