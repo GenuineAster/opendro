@@ -1,3 +1,6 @@
+#ifndef OPENDRO_SOFTWARE_RPI_DRO_H
+#define OPENDRO_SOFTWARE_RPI_DRO_H
+
 #include <stdint.h>
 
 #define MAX_NUM_AXES 3
@@ -38,3 +41,5 @@ typedef struct dro_t {
 } dro_t;
 
 void configure_default_dro(dro_t *dro, int num_axes);
+
+#endif
