@@ -120,11 +120,13 @@ bool ui_button(ui_t *ui, ui_rect_t rect, const char *text) {
 	SDL_SetRenderDrawColor(ui->_renderer, 185, 185, 185, 255);
 	SDL_RenderRect(ui->_renderer, &sdl_rect);
 
-	SDL_SetRenderDrawColor(ui->_renderer, 0, 0, 0, 255);
-	SDL_SetRenderScale(ui->_renderer, 2.f, 2.f);
-	const size_t text_len = strlen(text);
-	SDL_RenderDebugText(ui->_renderer, (rect.x + rect.w / 2 - text_len * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f / 2.f) / 2.f, (rect.y + rect.h / 2 - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f / 2.f) / 2.f, text);
-	SDL_SetRenderScale(ui->_renderer, 1.f, 1.f);
+	if (text != NULL) {
+		SDL_SetRenderDrawColor(ui->_renderer, 0, 0, 0, 255);
+		SDL_SetRenderScale(ui->_renderer, 2.f, 2.f);
+		const size_t text_len = strlen(text);
+		SDL_RenderDebugText(ui->_renderer, (rect.x + rect.w / 2 - text_len * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f / 2.f) / 2.f, (rect.y + rect.h / 2 - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f / 2.f) / 2.f, text);
+		SDL_SetRenderScale(ui->_renderer, 1.f, 1.f);
+	}
 
 	if (button->button_state & UI_BUTTON_STATE_RELEASED) {
 		return true;
