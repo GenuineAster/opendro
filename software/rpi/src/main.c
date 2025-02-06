@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
 			axis_text_offset += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
 		}
 
-		const float axis_skip = 10.f + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f * MAX_NUM_AXES + 10.f;
+		const float axis_skip = (10.f + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f) * MAX_NUM_AXES + 10.f;
 
 		// draw keypad
 		ui_rect_t rect_1 = {.x = 10.f, .y = axis_skip, .w = 80, .h = 80};
