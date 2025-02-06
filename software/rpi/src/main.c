@@ -86,9 +86,6 @@ int main(int argc, char **argv) {
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-		SDL_RenderLine(renderer, 0, 0, 1000, 1000);
-
 		char buf[12];
 		float axis_text_offset = 10;
 		for (int axis = 0; axis < dro.num_axes; ++axis) {
