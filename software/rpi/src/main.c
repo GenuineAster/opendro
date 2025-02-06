@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
 				line_offset += strlen(buf) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
 			}
 
-			snprintf(buf, 12, "REF %s", dro.axis_configs[axis].name);
+			snprintf(buf, 12, "ZERO %s", dro.axis_configs[axis].name);
 			ui_rect_t button_rect = {.x = line_offset, .y = axis_text_offset - 2.f, .w = 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .h = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 4.f};
 			if (ui_button(&ui, button_rect, buf)) {
 				dro.axes[axis].ref = dro.axes[axis].curr_pos;
