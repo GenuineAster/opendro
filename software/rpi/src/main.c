@@ -5,52 +5,8 @@
 #include "config.h"
 #include "dro.h"
 #include "ui.h"
-
-#define KEYPAD_GRID_MAX_COLUMNS 6
-#define KEYPAD_GRID_MAX_ROWS 6
-
-typedef void (*keypad_button_clicked_callback)(int column, int row, struct keypad_button_t *button);
-
-typedef struct keypad_button_t {
-	keypad_button_clicked_callback callback;
-	const char *button_text;
-	void *user_ptr;
-} keypad_button_t;
-
-typedef struct keypad_grid_t {
-	keypad_button_t buttons[KEYPAD_GRID_MAX_COLUMNS][KEYPAD_GRID_MAX_ROWS];
-	int num_rows;
-	int num_columns;
-	int button_size_x;
-	int button_size_y;
-} keypad_grid_t;
-
-void init_keypad(keypad_grid_t *keypad, int num_columns, int num_rows, int button_size_x, int button_size_y) {
-	for (int col = 0; col < KEYPAD_GRID_MAX_COLUMNS; ++col) {
-		for (int row = 0; row < KEYPAD_GRID_MAX_ROWS; ++row) {
-			keypad->buttons[col][row].callback = NULL;
-			keypad->buttons[col][row].button_text = NULL;
-			keypad->buttons[col][row].user_ptr = NULL;
-		}
-	}
-
-	keypad->num_columns = num_columns;
-	keypad->num_rows = num_rows;
-	keypad->button_size_x = button_size_x;
-	keypad->button_size_y = button_size_y;
-}
-
-void draw_keypad(ui_t *ui, keypad_grid_t *keypad, int offset_x, int offset_y) {
-	for (int col = 0; col < keypad->num_columns; ++col) {
-		for (int row = 0; row < keypad->num_rows; ++row) {
-			ui_rect_t rect = {.x = offset_x + (keypad->button_size_x + 10.f) * col, .y = offset_y + (keypad->button_size_y + 10.f) * row, .w = keypad->button_size_x, .h = keypad->button_size_y};
-			if (ui_button(ui, rect, keypad->buttons[col][row].button_text)) {
-				if (keypad->buttons[col][row].callback)
-					keypad->buttons[col][row].callback(col, row, &keypad->buttons[col][row]);
-			}
-		}
-	}
-}
+#include "keypad.h"
+#include "calculator.h"
 
 int main(int argc, char **argv) {
 	opendro_config_t config;
@@ -59,33 +15,8 @@ int main(int argc, char **argv) {
 	dro_t dro;
 	configure_default_dro(&dro, 2);
 
-	keypad_grid_t calculator_keypad;
-	init_keypad(&calculator_keypad, 5, 5, 80, 80);
-
-	{
-		calculator_keypad.buttons[0][0].button_text = "C";
-		calculator_keypad.buttons[1][0].button_text = "CE";
-		calculator_keypad.buttons[2][0].button_text = "DEL";
-		calculator_keypad.buttons[3][0].button_text = NULL;
-		calculator_keypad.buttons[4][0].button_text = "+";
-		calculator_keypad.buttons[0][1].button_text = "1";
-		calculator_keypad.buttons[1][1].button_text = "2";
-		calculator_keypad.buttons[2][1].button_text = "3";
-		calculator_keypad.buttons[3][1].button_text = NULL;
-		calculator_keypad.buttons[4][1].button_text = "-";
-		calculator_keypad.buttons[0][2].button_text = "4";
-		calculator_keypad.buttons[1][2].button_text = "5";
-		calculator_keypad.buttons[2][2].button_text = "6";
-		calculator_keypad.buttons[3][2].button_text = NULL;
-		calculator_keypad.buttons[4][2].button_text = "x";
-		calculator_keypad.buttons[0][3].button_text = "7";
-		calculator_keypad.buttons[1][3].button_text = "8";
-		calculator_keypad.buttons[2][3].button_text = "9";
-		calculator_keypad.buttons[3][3].button_text = NULL;
-		calculator_keypad.buttons[4][3].button_text = "/";
-		calculator_keypad.buttons[1][4].button_text = "0";
-		calculator_keypad.buttons[2][4].button_text = ".";
-	}
+	calculator_t calculator;
+	init_calculator(&calculator, &dro);
 
 	if ( ! SDL_Init(SDL_INIT_VIDEO)) {
 		fprintf(stderr, "Error: %s (%s)", "Failed to initialize SDL video subsystem.", SDL_GetError());
@@ -179,7 +110,7 @@ int main(int argc, char **argv) {
 
 		const float axis_skip = (10.f + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f) * MAX_NUM_AXES + 10.f;
 
-		draw_keypad(&ui, &calculator_keypad, 10, axis_skip);
+		draw_calculator(&calculator, &ui, 10, axis_skip);
 
 		SDL_RenderPresent(renderer);
 	}
