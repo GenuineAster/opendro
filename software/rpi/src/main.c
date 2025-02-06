@@ -5,7 +5,18 @@
 #include "dro.h"
 #include "ui.h"
 
+typedef struct opendro_config_t {
+	bool display_readout;
+} opendro_config_t;
+
+void populate_default_config(opendro_config_t *config) {
+	config->display_readout = true;
+}
+
 int main(int argc, char **argv) {
+	opendro_config_t config;
+	populate_default_config(&config);
+
 	dro_t dro;
 	configure_default_dro(&dro, 2);
 
@@ -81,15 +92,21 @@ int main(int argc, char **argv) {
 		char buf[12];
 		float axis_text_offset = 10;
 		for (int axis = 0; axis < dro.num_axes; ++axis) {
-			snprintf(buf, 12, "%s: % 08.2f", dro.axis_configs[axis].name, (float)(dro.axes[axis].curr_pos - dro.axes[axis].ref) / (float)(dro.axis_configs->divider));
+			int line_offset = 10.f;
+			if (config.display_readout) {
+				snprintf(buf, 12, "%s: % 08.2f", dro.axis_configs[axis].name, (float)(dro.axes[axis].curr_pos - dro.axes[axis].ref) / (float)(dro.axis_configs->divider));
 
-			SDL_SetRenderScale(renderer, 2.f, 2.f);
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-			SDL_RenderDebugText(renderer, 10 / 2.f, axis_text_offset / 2.f, buf);
-			SDL_SetRenderScale(renderer, 1.f, 1.f);
+				SDL_SetRenderScale(renderer, 2.f, 2.f);
+				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+				SDL_RenderDebugText(renderer, line_offset / 2.f, axis_text_offset / 2.f, buf);
+				SDL_SetRenderScale(renderer, 1.f, 1.f);
 
-			ui_rect_t button_rect = {.x = 10.f + 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f, .y = axis_text_offset - 2.f, .w = 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .h = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 4.f};
-			if (ui_button(&ui, button_rect, "REF")) {
+				line_offset += strlen(buf) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
+			}
+
+			snprintf(buf, 12, "REF %s", dro.axis_configs[axis].name);
+			ui_rect_t button_rect = {.x = line_offset, .y = axis_text_offset - 2.f, .w = 12.f * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .h = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 4.f};
+			if (ui_button(&ui, button_rect, buf)) {
 				dro.axes[axis].ref = dro.axes[axis].curr_pos;
 			}
 
