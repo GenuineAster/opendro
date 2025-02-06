@@ -134,3 +134,11 @@ bool ui_button(ui_t *ui, ui_rect_t rect, const char *text) {
 		return false;
 	}
 }
+
+void ui_text(ui_t *ui, ui_rect_t rect, const char *text) {
+	SDL_SetRenderDrawColor(ui->_renderer, 255, 0, 0, 255);
+	SDL_SetRenderScale(ui->_renderer, 2.f, 2.f);
+	const size_t text_len = strlen(text);
+	SDL_RenderDebugText(ui->_renderer, rect.x / 2.f, rect.y / 2.f, text);
+	SDL_SetRenderScale(ui->_renderer, 1.f, 1.f);
+}
