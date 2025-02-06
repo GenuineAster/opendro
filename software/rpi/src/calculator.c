@@ -1,6 +1,7 @@
 #include "calculator.h"
 
 #include <SDL3/SDL_render.h>
+#include <stdio.h>
 
 #include "dro.h"
 #include "ui.h"

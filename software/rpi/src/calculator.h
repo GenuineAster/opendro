@@ -16,4 +16,4 @@ typedef struct calculator_t {
 void init_calculator(calculator_t *calculator, dro_t *dro);
 void draw_calculator(calculator_t *calculator, ui_t *ui, int offset_x, int offset_y);
 
-#endif OPENDRO_SOFTWARE_RPI_CALCULATOR_H
+#endif // OPENDRO_SOFTWARE_RPI_CALCULATOR_H

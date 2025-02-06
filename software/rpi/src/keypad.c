@@ -1,5 +1,7 @@
 #include "keypad.h"
 
+#include <stddef.h>
+
 #include "ui.h"
 
 void init_keypad(keypad_grid_t *keypad, int num_columns, int num_rows, int button_size_x, int button_size_y) {

@@ -10,4 +10,4 @@ typedef struct opendro_config_t {
 
 void populate_default_config(opendro_config_t *config);
 
-#endif OPENDRO_SOFTWARE_RPI_CONFIG_H
+#endif // OPENDRO_SOFTWARE_RPI_CONFIG_H
