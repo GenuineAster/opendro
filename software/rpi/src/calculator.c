@@ -118,39 +118,38 @@ static void submit_operation(calculator_t *calculator) {
 	reset_scratch(calculator);
 }
 
+static void input_op(calculator_t *calculator, uint32_t operation) {
+	// only submit if user has entered data, otherwise simply override the operation
+	if (calculator->scratch_index != 0) {
+		submit_operation(calculator);
+	}
+	calculator->operation = operation;
+	reset_scratch(calculator);
+}
+
 static void input_add(int column, int row, void *user_ptr) {
 	calculator_t *calculator = user_ptr;
-	submit_operation(calculator);
-	calculator->operation = CALCULATOR_OPERATION_ADD;
-	reset_scratch(calculator);
+	input_op(calculator, CALCULATOR_OPERATION_ADD);
 }
 
 static void input_sub(int column, int row, void *user_ptr) {
 	calculator_t *calculator = user_ptr;
-	submit_operation(calculator);
-	calculator->operation = CALCULATOR_OPERATION_SUB;
-	reset_scratch(calculator);
+	input_op(calculator, CALCULATOR_OPERATION_SUB);
 }
 
 static void input_mul(int column, int row, void *user_ptr) {
 	calculator_t *calculator = user_ptr;
-	submit_operation(calculator);
-	calculator->operation = CALCULATOR_OPERATION_MUL;
-	reset_scratch(calculator);
+	input_op(calculator, CALCULATOR_OPERATION_MUL);
 }
 
 static void input_div(int column, int row, void *user_ptr) {
 	calculator_t *calculator = user_ptr;
-	submit_operation(calculator);
-	calculator->operation = CALCULATOR_OPERATION_DIV;
-	reset_scratch(calculator);
+	input_op(calculator, CALCULATOR_OPERATION_DIV);
 }
 
 static void input_enter(int column, int row, void *user_ptr) {
 	calculator_t *calculator = user_ptr;
-	submit_operation(calculator);
-	calculator->operation = CALCULATOR_OPERATION_NONE;
-	reset_scratch(calculator);
+	input_op(calculator, CALCULATOR_OPERATION_NONE);
 }
 
 void init_calculator(calculator_t *calculator, dro_t *dro) {
