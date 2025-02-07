@@ -2,6 +2,8 @@
 
 #include <SDL3/SDL_render.h>
 #include <stdio.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "dro.h"
 #include "ui.h"
@@ -114,6 +116,15 @@ static void submit_operation(calculator_t *calculator) {
 	case CALCULATOR_OPERATION_DIV: {
 		calculator->result /= calculator->operand;
 	} break;
+	case CALCULATOR_OPERATION_SIN: {
+		calculator->result = sin(calculator->result * M_PI / 180.f);
+	} break;
+	case CALCULATOR_OPERATION_COS: {
+		calculator->result = cos(calculator->result * M_PI / 180.f);
+	} break;
+	case CALCULATOR_OPERATION_TAN: {
+		calculator->result = tan(calculator->result * M_PI / 180.f);
+	} break;
 	}
 	reset_scratch(calculator);
 }
@@ -149,7 +160,28 @@ static void input_div(int column, int row, void *user_ptr) {
 
 static void input_enter(int column, int row, void *user_ptr) {
 	calculator_t *calculator = user_ptr;
-	input_op(calculator, CALCULATOR_OPERATION_NONE);
+	input_op(calculator, CALCULATOR_OPERATION_ADD);
+}
+
+static void input_sin(int column, int row, void *user_ptr) {
+	calculator_t *calculator = user_ptr;
+	input_op(calculator, CALCULATOR_OPERATION_SIN);
+	submit_operation(calculator);
+	calculator->operation = CALCULATOR_OPERATION_ADD;
+}
+
+static void input_cos(int column, int row, void *user_ptr) {
+	calculator_t *calculator = user_ptr;
+	input_op(calculator, CALCULATOR_OPERATION_COS);
+	submit_operation(calculator);
+	calculator->operation = CALCULATOR_OPERATION_ADD;
+}
+
+static void input_tan(int column, int row, void *user_ptr) {
+	calculator_t *calculator = user_ptr;
+	input_op(calculator, CALCULATOR_OPERATION_TAN);
+	submit_operation(calculator);
+	calculator->operation = CALCULATOR_OPERATION_ADD;
 }
 
 void init_calculator(calculator_t *calculator, dro_t *dro) {
@@ -203,14 +235,16 @@ void init_calculator(calculator_t *calculator, dro_t *dro) {
 		calculator->keypad.buttons[1][3].callback = input_8;
 		calculator->keypad.buttons[2][3].button_text = "9";
 		calculator->keypad.buttons[2][3].callback = input_9;
-		calculator->keypad.buttons[3][3].button_text = NULL;
-		calculator->keypad.buttons[4][3].button_text = NULL;
-		calculator->keypad.buttons[0][4].button_text = NULL;
+		calculator->keypad.buttons[3][3].button_text = "SIN";
+		calculator->keypad.buttons[3][3].callback = input_sin;
+		calculator->keypad.buttons[4][3].button_text = "COS";
+		calculator->keypad.buttons[4][3].callback = input_cos;
 		calculator->keypad.buttons[1][4].button_text = "0";
 		calculator->keypad.buttons[1][4].callback = input_0;
 		calculator->keypad.buttons[2][4].button_text = ".";
 		calculator->keypad.buttons[2][4].callback = input_decimal;
-		calculator->keypad.buttons[3][4].button_text = NULL;
+		calculator->keypad.buttons[3][4].button_text = "TAN";
+		calculator->keypad.buttons[3][4].callback = input_tan;
 		calculator->keypad.buttons[4][4].button_text = "ENTER";
 		calculator->keypad.buttons[4][4].callback = input_enter;
 	}
