@@ -17,6 +17,11 @@ void init_ui(ui_t *ui, SDL_Renderer *renderer) {
 	ui->_hover_id = 0;
 	ui->_mouse_x = 0;
 	ui->_mouse_y = 0;
+
+	SDL_Rect rect;
+	SDL_GetRenderViewport(ui->_renderer, &rect);
+	ui->ui_size_x = rect.w;
+	ui->ui_size_y = rect.h;
 }
 
 void ui_frame(ui_t *ui) {

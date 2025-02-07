@@ -36,6 +36,8 @@ typedef struct ui_t {
 	int _mouse_x;
 	int _mouse_y;
 	uint32_t _hover_id;
+	uint32_t ui_size_x;
+	uint32_t ui_size_y;
 } ui_t;
 
 void init_ui(ui_t *ui, struct SDL_Renderer *renderer);
