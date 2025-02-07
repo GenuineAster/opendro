@@ -41,7 +41,7 @@ typedef struct ui_t {
 void init_ui(ui_t *ui, struct SDL_Renderer *renderer);
 void ui_frame(ui_t *ui);
 bool ui_handle_input(ui_t *ui, SDL_Event *event);
-bool ui_button(ui_t *ui, ui_rect_t rect, const char *text);
-void ui_text(ui_t *ui, ui_rect_t rect, const char *text);
+bool ui_button(ui_t *ui, ui_rect_t rect, const char *text, float text_scale);
+void ui_text(ui_t *ui, ui_rect_t rect, const char *text, float text_scale);
 
 #endif // OPENDRO_SOFTWARE_RPI_UI_H

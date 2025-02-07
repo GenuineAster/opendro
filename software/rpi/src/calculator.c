@@ -229,7 +229,9 @@ void draw_calculator(calculator_t *calculator, ui_t *ui, int offset_x, int offse
 		snprintf(buf, 16, "%s", calculator->scratch);
 	}
 
-	ui_text(ui, rect, buf);
+	ui_text(ui, rect, buf, 3.f);
 
-	draw_keypad(&calculator->keypad, ui, offset_x, offset_y + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f);
+	rect.y += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 3.f + 10.f;
+
+	draw_keypad(&calculator->keypad, ui, rect.x, rect.y);
 }

@@ -96,7 +96,7 @@ bool ui_handle_input(ui_t *ui, SDL_Event *event) {
 	return consumed;
 }
 
-bool ui_button(ui_t *ui, ui_rect_t rect, const char *text) {
+bool ui_button(ui_t *ui, ui_rect_t rect, const char *text, float text_scale) {
 	ui_button_t *button = &ui->_buttons[ui->_frame_button_id++];
 	if ( ! ui_rect_same(button->rect, rect)) {
 		// different button, discard state
@@ -122,9 +122,9 @@ bool ui_button(ui_t *ui, ui_rect_t rect, const char *text) {
 
 	if (text != NULL) {
 		SDL_SetRenderDrawColor(ui->_renderer, 0, 0, 0, 255);
-		SDL_SetRenderScale(ui->_renderer, 2.f, 2.f);
+		SDL_SetRenderScale(ui->_renderer, text_scale, text_scale);
 		const size_t text_len = strlen(text);
-		SDL_RenderDebugText(ui->_renderer, (rect.x + rect.w / 2 - text_len * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f / 2.f) / 2.f, (rect.y + rect.h / 2 - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f / 2.f) / 2.f, text);
+		SDL_RenderDebugText(ui->_renderer, (rect.x + rect.w / 2 - text_len * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * text_scale / 2.f) / text_scale, (rect.y + rect.h / 2 - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * text_scale / 2.f) / text_scale, text);
 		SDL_SetRenderScale(ui->_renderer, 1.f, 1.f);
 	}
 
@@ -135,10 +135,10 @@ bool ui_button(ui_t *ui, ui_rect_t rect, const char *text) {
 	}
 }
 
-void ui_text(ui_t *ui, ui_rect_t rect, const char *text) {
+void ui_text(ui_t *ui, ui_rect_t rect, const char *text, float text_scale) {
 	SDL_SetRenderDrawColor(ui->_renderer, 255, 0, 0, 255);
-	SDL_SetRenderScale(ui->_renderer, 2.f, 2.f);
+	SDL_SetRenderScale(ui->_renderer, text_scale, text_scale);
 	const size_t text_len = strlen(text);
-	SDL_RenderDebugText(ui->_renderer, rect.x / 2.f, rect.y / 2.f, text);
+	SDL_RenderDebugText(ui->_renderer, rect.x / text_scale, rect.y / text_scale, text);
 	SDL_SetRenderScale(ui->_renderer, 1.f, 1.f);
 }
