@@ -220,7 +220,39 @@ void init_calculator(calculator_t *calculator, dro_t *dro) {
 void draw_calculator(calculator_t *calculator, ui_t *ui, int offset_x, int offset_y) {
 	ui_rect_t rect = {.x = offset_x, .y = offset_y};
 
+	// draw current operation
+	switch (calculator->operation) {
+	case CALCULATOR_OPERATION_ADD: {
+		ui_rect_t add_rect = {.x = rect.x, .y = rect.y};
+		ui_text(ui, add_rect, "ADD", 2.f);
+	} break;
+	case CALCULATOR_OPERATION_SUB: {
+		// render further down the line from `add` to make it easier to visually distinguish
+		// 4 = 3 characters from ADD, as well as a space
+		ui_rect_t add_rect = {.x = rect.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f * 4, .y = rect.y};
+		ui_text(ui, add_rect, "SUB", 2.f);
+	} break;
+	case CALCULATOR_OPERATION_MUL: {
+		// offset from sub
+		ui_rect_t add_rect = {.x = rect.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f * 4 * 2, .y = rect.y};
+		ui_text(ui, add_rect, "MUL", 2.f);
+	} break;
+	case CALCULATOR_OPERATION_DIV: {
+		// offset from mul
+		ui_rect_t add_rect = {.x = rect.x + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f * 4 * 3, .y = rect.y};
+		ui_text(ui, add_rect, "DIV", 2.f);
+	} break;
+	default: break;
+	}
+
 	char buf[16];
+
+	// always draw result, right-aligned
+	int result_len = snprintf(buf, 16, "% 08.2f", calculator->result);
+	ui_rect_t result_rect = {.x = ui->ui_size_x - 10.f - result_len * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .y = rect.y};
+	ui_text(ui, result_rect, buf, 2.f);
+
+	rect.y += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
 
 	// if scratch is empty, show result
 	if (calculator->scratch_index == 0) {
