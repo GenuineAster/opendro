@@ -173,7 +173,7 @@ void init_calculator(calculator_t *calculator, dro_t *dro) {
 		calculator->keypad.buttons[0][0].button_text = "C";
 		calculator->keypad.buttons[0][0].callback = clear_all;
 		calculator->keypad.buttons[1][0].button_text = "CE";
-		calculator->keypad.buttons[0][0].callback = clear_entry;
+		calculator->keypad.buttons[1][0].callback = clear_entry;
 		calculator->keypad.buttons[2][0].button_text = "DEL";
 		calculator->keypad.buttons[2][0].callback = input_del;
 		calculator->keypad.buttons[3][0].button_text = NULL;
