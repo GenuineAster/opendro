@@ -7,16 +7,20 @@
 #include "ui.h"
 #include "keypad.h"
 #include "calculator.h"
+#include "memory_store.h"
 
 int main(int argc, char **argv) {
 	opendro_config_t config;
 	populate_default_config(&config);
 
+	memory_store_t memory_store;
+	init_memory_store(&memory_store);
+
 	dro_t dro;
 	configure_default_dro(&dro, 2);
 
 	calculator_t calculator;
-	init_calculator(&calculator, &dro);
+	init_calculator(&calculator, &dro, &memory_store);
 
 	if ( ! SDL_Init(SDL_INIT_VIDEO)) {
 		fprintf(stderr, "Error: %s (%s)", "Failed to initialize SDL video subsystem.", SDL_GetError());

@@ -1,7 +1,7 @@
 #ifndef OPENDRO_SOFTWARE_RPI_MEMORY_H
 #define OPENDRO_SOFTWARE_RPI_MEMORY_H
 
-#define NUM_MEMORY_SLOTS 32
+#define NUM_MEMORY_SLOTS 5
 
 #include <stdint.h>
 #include <stdbool.h>

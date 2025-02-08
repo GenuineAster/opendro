@@ -8,6 +8,7 @@
 
 typedef struct dro_t dro_t;
 typedef struct ui_t ui_t;
+typedef struct memory_store_t memory_store_t;
 
 enum {
 	CALCULATOR_OPERATION_NONE = 0,
@@ -20,8 +21,14 @@ enum {
 	CALCULATOR_OPERATION_TAN,
 };
 
+enum {
+	CALCULATOR_MENU_KEYPAD = 0,
+	CALCULATOR_MENU_MEMORY,
+};
+
 typedef struct calculator_t {
 	dro_t *dro;
+	memory_store_t *memory_store;
 	keypad_grid_t keypad;
 	float operand;
 	float result;
@@ -29,9 +36,10 @@ typedef struct calculator_t {
 	char scratch[64];
 	uint32_t scratch_index;
 	bool scratch_sign;
+	uint32_t calculator_menu;
 } calculator_t;
 
-void init_calculator(calculator_t *calculator, dro_t *dro);
+void init_calculator(calculator_t *calculator, dro_t *dro, memory_store_t *memory_store);
 void draw_calculator(calculator_t *calculator, ui_t *ui, int offset_x, int offset_y);
 
 #endif // OPENDRO_SOFTWARE_RPI_CALCULATOR_H

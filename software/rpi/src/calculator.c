@@ -8,6 +8,7 @@
 #include "dro.h"
 #include "ui.h"
 #include "calculator.h"
+#include "memory_store.h"
 
 static void reset_scratch(calculator_t *calculator) {
 	calculator->scratch_index = 0;
@@ -184,12 +185,19 @@ static void input_tan(int column, int row, void *user_ptr) {
 	calculator->operation = CALCULATOR_OPERATION_ADD;
 }
 
-void init_calculator(calculator_t *calculator, dro_t *dro) {
+static void view_mem(int column, int row, void *user_ptr) {
+	calculator_t *calculator = user_ptr;
+	calculator->calculator_menu = CALCULATOR_MENU_MEMORY;
+}
+
+void init_calculator(calculator_t *calculator, dro_t *dro, memory_store_t *memory_store) {
 	calculator->dro = dro;
+	calculator->memory_store = memory_store;
 	calculator->operand = 0.f;
 	calculator->result = 0.f;
 	calculator->operation = CALCULATOR_OPERATION_ADD;
 	reset_scratch(calculator);
+	calculator->calculator_menu = CALCULATOR_MENU_KEYPAD;
 
 	init_keypad(&calculator->keypad, 5, 5, 80, 80);
 
@@ -208,7 +216,8 @@ void init_calculator(calculator_t *calculator, dro_t *dro) {
 		calculator->keypad.buttons[2][0].button_text = "DEL";
 		calculator->keypad.buttons[2][0].callback = input_del;
 		calculator->keypad.buttons[3][0].button_text = NULL;
-		calculator->keypad.buttons[4][0].button_text = NULL;
+		calculator->keypad.buttons[4][0].button_text = "MEM";
+		calculator->keypad.buttons[4][0].callback = view_mem;
 		calculator->keypad.buttons[0][1].button_text = "1";
 		calculator->keypad.buttons[0][1].callback = input_1;
 		calculator->keypad.buttons[1][1].button_text = "2";
@@ -247,6 +256,79 @@ void init_calculator(calculator_t *calculator, dro_t *dro) {
 		calculator->keypad.buttons[3][4].callback = input_tan;
 		calculator->keypad.buttons[4][4].button_text = "ENTER";
 		calculator->keypad.buttons[4][4].callback = input_enter;
+	}
+}
+
+void draw_memory(calculator_t *calculator, memory_store_t *memory_store, ui_t *ui, ui_rect_t rect) {
+	char buf[8];
+
+	for (int i = 0; i < NUM_MEMORY_SLOTS; ++i) {
+		// center text relative to buttons
+		ui_rect_t text_rect = rect;
+		text_rect.y += UI_MARGIN;
+
+		const bool in_use = memory_slot_in_use(memory_store, i);
+		const bool is_vec = memory_slot_is_vector(memory_store, i);
+		if (in_use) {
+			if (is_vec) {
+				memory_vec_t vec;
+				memory_slot_read_vector(memory_store, &vec, i);
+				snprintf(buf, 8, "% 6.2f", vec.x);
+			} else {
+				float scalar;
+				memory_slot_read_scalar(memory_store, &scalar, i);
+				snprintf(buf, 8, "% 6.2f", scalar);
+			}
+			ui_text(ui, text_rect, buf, 3.f);
+		} else {
+			ui_text(ui, text_rect, "<EMPTY>", 3.f);
+		}
+
+		ui_rect_t button_rect = rect;
+		button_rect.x += 7 * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 3.f + UI_MARGIN;
+		button_rect.h = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + UI_MARGIN * 2.f;
+		button_rect.w = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f * 4 + UI_MARGIN * 2.f;
+
+		if (in_use) {
+			if (ui_button(ui, button_rect, "LOAD", 2.f)) {
+				if (is_vec) {
+					float scalar;
+					memory_slot_read_scalar(memory_store, &scalar, i);
+					calculator->scratch_index = snprintf(calculator->scratch, sizeof(calculator->scratch), "%.2f", scalar);
+				} else {
+					memory_vec_t vec;
+					memory_slot_read_vector(memory_store, &vec, i);
+					calculator->scratch_index = snprintf(calculator->scratch, sizeof(calculator->scratch), "%.2f", vec.x);
+				}
+			}
+		}
+
+		button_rect.x += button_rect.w + UI_MARGIN;
+
+		if (ui_button(ui, button_rect, "STOR", 2.f)) {
+			float value;
+			if (calculator->scratch_index != 0) {
+				sscanf_s(calculator->scratch, "%f", &value);
+			} else {
+				value = calculator->result;
+			}
+			memory_slot_write_scalar(memory_store, i, value);
+		}
+
+		button_rect.x += button_rect.w + UI_MARGIN;
+
+		if (ui_button(ui, button_rect, "CLR", 2.f)) {
+			memory_slot_free(memory_store, i);
+		}
+
+		rect.y += UI_MARGIN * 2.f + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 3.f;
+	}
+
+	ui_rect_t exit_button_rect = rect;
+	exit_button_rect.w = UI_MARGIN * 2.f + 4 * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f;
+	exit_button_rect.h = UI_MARGIN * 2.f + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f;
+	if (ui_button(ui, exit_button_rect, "BACK", 2.f)) {
+		calculator->calculator_menu = CALCULATOR_MENU_KEYPAD;
 	}
 }
 
@@ -298,5 +380,13 @@ void draw_calculator(calculator_t *calculator, ui_t *ui, int offset_x, int offse
 
 	rect.y += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 3.f + UI_MARGIN;
 
-	draw_keypad(&calculator->keypad, ui, rect.x, rect.y);
+	switch (calculator->calculator_menu) {
+		case CALCULATOR_MENU_KEYPAD: {
+			draw_keypad(&calculator->keypad, ui, rect.x, rect.y);
+		} break;
+		case CALCULATOR_MENU_MEMORY: {
+			draw_memory(calculator, calculator->memory_store, ui, rect);
+		} break;
+		default: break;
+	}
 }
