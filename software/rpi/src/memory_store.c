@@ -17,7 +17,7 @@ bool memory_slot_in_use(memory_store_t *store, uint32_t slot) {
 		return false;
 	}
 
-	return (store->memory_slot_usage[slot >> 5] >> (slot & 0x31)) & 0x1;
+	return (store->memory_slot_usage[slot >> 5] >> (slot & 31)) & 0x1;
 }
 
 void memory_slot_free(memory_store_t *store, uint32_t slot) {
@@ -25,7 +25,7 @@ void memory_slot_free(memory_store_t *store, uint32_t slot) {
 		return;
 	}
 
-	store->memory_slot_usage[slot >> 5] &= ~(1 << (slot & 0x31));
+	store->memory_slot_usage[slot >> 5] &= ~(1 << (slot & 31));
 }
 
 bool memory_slot_is_vector(memory_store_t *store, uint32_t slot) {
@@ -33,7 +33,7 @@ bool memory_slot_is_vector(memory_store_t *store, uint32_t slot) {
 		return false;
 	}
 
-	return (store->memory_slot_type[slot >> 5] >> (slot & 0x31)) & 0x1;
+	return (store->memory_slot_type[slot >> 5] >> (slot & 31)) & 0x1;
 }
 
 void memory_slot_read_vector(memory_store_t *store, memory_vec_t* vector, uint32_t slot) {
@@ -49,8 +49,8 @@ void memory_slot_write_vector(memory_store_t *store, uint32_t slot, const memory
 		return;
 	}
 
-	store->memory_slot_usage[slot >> 5] |= (1 << (slot & 0x31));
-	store->memory_slot_type[slot >> 5] |= (1 << (slot & 0x31));
+	store->memory_slot_usage[slot >> 5] |= (1 << (slot & 31));
+	store->memory_slot_type[slot >> 5] |= (1 << (slot & 31));
 	store->memory_slots[slot] = *vector;
 }
 
@@ -67,7 +67,7 @@ void memory_slot_write_scalar(memory_store_t *store, uint32_t slot, float scalar
 		return;
 	}
 
-	store->memory_slot_usage[slot >> 5] |= (1 << (slot & 0x31));
-	store->memory_slot_type[slot >> 5] &= ~(1 << (slot & 0x31));
+	store->memory_slot_usage[slot >> 5] |= (1 << (slot & 31));
+	store->memory_slot_type[slot >> 5] &= ~(1 << (slot & 31));
 	store->memory_slots[slot].x = scalar;
 }
