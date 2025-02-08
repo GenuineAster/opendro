@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 		char buf[12];
 		float axis_text_offset = 10;
 		for (int axis = 0; axis < dro.num_axes; ++axis) {
-			int line_offset = 10.f;
+			int line_offset = UI_MARGIN;
 			if (config.display_readout) {
 				snprintf(buf, 12, "%s: % 08.2f", dro.axis_configs[axis].name, (float)(dro.axes[axis].curr_pos - dro.axes[axis].ref) / (float)(dro.axis_configs->divider));
 
@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 				SDL_RenderDebugText(renderer, line_offset / 2.f, axis_text_offset / 2.f, buf);
 				SDL_SetRenderScale(renderer, 1.f, 1.f);
 
-				line_offset += strlen(buf) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
+				line_offset += strlen(buf) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + UI_MARGIN;
 			}
 
 			snprintf(buf, 7, "ZER %s", dro.axis_configs[axis].name);
@@ -105,10 +105,10 @@ int main(int argc, char **argv) {
 				dro.axes[axis].ref = dro.axes[axis].curr_pos;
 			}
 
-			axis_text_offset += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
+			axis_text_offset += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + UI_MARGIN;
 		}
 
-		const float axis_skip = (10.f + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f) * MAX_NUM_AXES + 10.f;
+		const float axis_skip = (UI_MARGIN + SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f) * MAX_NUM_AXES + UI_MARGIN;
 
 		draw_calculator(&calculator, &ui, 10, axis_skip);
 

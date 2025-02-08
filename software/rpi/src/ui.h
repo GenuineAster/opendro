@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define UI_MARGIN 10.f
+
 #define MAX_BUTTONS 128
 
 typedef union SDL_Event SDL_Event;

@@ -282,10 +282,10 @@ void draw_calculator(calculator_t *calculator, ui_t *ui, int offset_x, int offse
 
 	// always draw result, right-aligned
 	int result_len = snprintf(buf, 16, "% 08.2f", calculator->result);
-	ui_rect_t result_rect = {.x = ui->ui_size_x - 10.f - result_len * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .y = rect.y};
+	ui_rect_t result_rect = {.x = ui->ui_size_x - UI_MARGIN - result_len * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f, .y = rect.y};
 	ui_text(ui, result_rect, buf, 2.f);
 
-	rect.y += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + 10.f;
+	rect.y += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + UI_MARGIN;
 
 	// if scratch is empty, show result
 	if (calculator->scratch_index == 0) {
@@ -296,7 +296,7 @@ void draw_calculator(calculator_t *calculator, ui_t *ui, int offset_x, int offse
 
 	ui_text(ui, rect, buf, 3.f);
 
-	rect.y += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 3.f + 10.f;
+	rect.y += SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 3.f + UI_MARGIN;
 
 	draw_keypad(&calculator->keypad, ui, rect.x, rect.y);
 }
