@@ -1,7 +1,7 @@
 #include "memory_store.h"
 
 void init_memory_store(memory_store_t *store) {
-	for (uint32_t i = 0; i < NUM_MEMORY_SLOTS / 32; ++i) {
+	for (uint32_t i = 0; i < (NUM_MEMORY_SLOTS + 31 / 32); ++i) {
 		store->memory_slot_type[i] = 0;
 		store->memory_slot_usage[i] = 0;
 	}

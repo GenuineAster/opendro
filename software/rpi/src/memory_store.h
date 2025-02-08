@@ -12,9 +12,9 @@ typedef struct memory_vec_t {
 
 typedef struct memory_store_t {
 	// bitfield, 0 for not used, 1 for in use
-	uint32_t memory_slot_usage[NUM_MEMORY_SLOTS / 32];
+	uint32_t memory_slot_usage[(NUM_MEMORY_SLOTS + 31) / 32];
 	// bit field, 0 for scalar, 1 for vector
-	uint32_t memory_slot_type[NUM_MEMORY_SLOTS / 32];
+	uint32_t memory_slot_type[(NUM_MEMORY_SLOTS + 31) / 32];
 	memory_vec_t memory_slots[NUM_MEMORY_SLOTS];
 } memory_store_t;
 
