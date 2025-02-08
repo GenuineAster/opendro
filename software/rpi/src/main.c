@@ -91,10 +91,8 @@ int main(int argc, char **argv) {
 			if (config.display_readout) {
 				snprintf(buf, 12, "%s: % 08.2f", dro.axis_configs[axis].name, (float)(dro.axes[axis].curr_pos - dro.axes[axis].ref) / (float)(dro.axis_configs->divider));
 
-				SDL_SetRenderScale(renderer, 2.f, 2.f);
-				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-				SDL_RenderDebugText(renderer, line_offset / 2.f, axis_text_offset / 2.f, buf);
-				SDL_SetRenderScale(renderer, 1.f, 1.f);
+				ui_rect_t axis_text_rect = {.x = line_offset, .y = axis_text_offset};
+				ui_text(&ui, axis_text_rect, buf, 2.f);
 
 				line_offset += strlen(buf) * SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * 2.f + UI_MARGIN;
 			}
