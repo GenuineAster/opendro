@@ -103,7 +103,7 @@ static void input_del(int column, int row, void *user_ptr) {
 }
 
 static void submit_operation(calculator_t *calculator) {
-	sscanf_s(calculator->scratch, "%f", &calculator->operand);
+	sscanf(calculator->scratch, "%f", &calculator->operand);
 	switch (calculator->operation) {
 	case CALCULATOR_OPERATION_ADD: {
 		calculator->result += calculator->operand;
@@ -308,7 +308,7 @@ void draw_memory(calculator_t *calculator, memory_store_t *memory_store, ui_t *u
 		if (ui_button(ui, button_rect, "STOR", 2.f)) {
 			float value;
 			if (calculator->scratch_index != 0) {
-				sscanf_s(calculator->scratch, "%f", &value);
+				sscanf(calculator->scratch, "%f", &value);
 			} else {
 				value = calculator->result;
 			}
