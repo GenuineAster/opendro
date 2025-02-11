@@ -128,7 +128,7 @@ bool segdisplay_write_command(segdisplay_t *display, uint8_t cmd, uint8_t arg) {
 
     gpio_put(display->chip_select, 1);
 #else
-    gpioWrite(8, 0);
+    gpioWrite(display->chip_select, 0);
     static uint16_t data;
     data = (arg << 8) | cmd;
 	int ret;
@@ -153,7 +153,7 @@ bool segdisplay_write_command(segdisplay_t *display, uint8_t cmd, uint8_t arg) {
         perror("Failed to send message through SPI");
         return false;
     }
-    gpioWrite(8, 1);
+    gpioWrite(display->chip_select, 1);
 #endif
     return true;
 }
