@@ -10,7 +10,7 @@ target_link_libraries(opendro-pico-firmware PRIVATE
     hardware_i2c
     hardware_pio
     hardware_spi
-    # segdisplay
+    segdisplay
 )
 
 pico_enable_stdio_usb(opendro-pico-firmware 1)

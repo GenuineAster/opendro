@@ -20,6 +20,8 @@ if (OPENDRO_PLATFORM_HAS_GRAPHICAL_OS)
     include(ConfigureSDL)
 endif()
 
+add_subdirectory(shared)
+
 if (OPENDRO_PLATFORM_HAS_GRAPHICAL_OS)
     add_subdirectory(software)
 endif()

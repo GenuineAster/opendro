@@ -7,6 +7,8 @@
 #include "hardware/timer.h"
 #include "encoder.pio.h"
 
+#include <segdisplay/segdisplay.h>
+
 enum {
   DIRECTION_NONE = 0,
   DIRECTION_0 = -1,
@@ -55,32 +57,7 @@ volatile int interrupt = 0;
 #define AXIS_2_DIVISOR (1000000 / 10)
 
 const uint sm = 0;
-
-enum {
-  SEGDISPLAY_NO_OP = 0x00,
-  SEGDISPLAY_DIGIT_0 = 0x01,
-  SEGDISPLAY_DIGIT_1 = 0x02,
-  SEGDISPLAY_DIGIT_2 = 0x03,
-  SEGDISPLAY_DIGIT_3 = 0x04,
-  SEGDISPLAY_DIGIT_4 = 0x05,
-  SEGDISPLAY_DIGIT_5 = 0x06,
-  SEGDISPLAY_DIGIT_6 = 0x07,
-  SEGDISPLAY_DIGIT_7 = 0x08,
-  SEGDISPLAY_DECODE_MODE = 0x09,
-  SEGDISPLAY_INTENSITY = 0x0A,
-  SEGDISPLAY_SCAN_LIMIT = 0x0B,
-  SEGDISPLAY_SHUT_DOWN = 0x0C,
-  SEGDISPLAY_TEST_DISPLAY = 0x0F,
-};
-
-void segdisplay_write_command(spi_inst_t *inst, int cs_gpio, uint8_t cmd, uint8_t arg) {
-  gpio_put(cs_gpio, 0);
-
-  const uint16_t data = (cmd << 8) | arg;
-  spi_write16_blocking(inst, &data, 1);
-
-  gpio_put(cs_gpio, 1);
-}
+segdisplay_t disp0, disp1;
 
 void setup() {
   stdio_init_all();
@@ -97,17 +74,19 @@ void setup() {
   spi_init(spi0, 10000000);
   spi_set_format(spi0, 16, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
 
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_SHUT_DOWN, 0x01);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_TEST_DISPLAY, 0x00);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DECODE_MODE, 0xFF);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_SCAN_LIMIT, 0x07);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_INTENSITY, 0x0F);
+  if ( ! segdisplay_init(&disp0, 0, 17)) {
+    while (true) {
+        // spin forever
+        sleep_ms(100);
+    }
+  }
 
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_SHUT_DOWN, 0x01);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_TEST_DISPLAY, 0x00);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DECODE_MODE, 0xFF);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_SCAN_LIMIT, 0x07);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_INTENSITY, 0x0F);
+  if ( ! segdisplay_init(&disp1, 0, 20)) {
+    while (true) {
+        // spin forever
+        sleep_ms(100);
+    }
+  }
 
   // Base pin to connect the A phase of the encoder.
   // The B phase must be connected to the next pin
@@ -157,38 +136,38 @@ void loop() {
   printf("%s\n", buf1);
   printf("%s\n", buf2);
 
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_0, (micrometers2 / 1) % 10);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_0, (micrometers2 / 1) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_1, (micrometers2 / 10) % 10);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_1, (micrometers2 / 10) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_2, ((millimeters2 / 1) % 10) | 0x80);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_2, ((millimeters2 / 1) % 10) | 0x80);
   sleep_us(1);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_3, (millimeters2 / 10) % 10);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_3, (millimeters2 / 10) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_4, (millimeters2 / 100) % 10);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_4, (millimeters2 / 100) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_5, (millimeters2 / 1000) % 10);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_5, (millimeters2 / 1000) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_6, (millimeters2 / 10000) % 10);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_6, (millimeters2 / 10000) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 17, SEGDISPLAY_DIGIT_7, sign2 ? 0x0F : 0x0A);
+  segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_7, sign2 ? 0x0F : 0x0A);
   sleep_us(1);
 
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_0, (micrometers1 / 1) % 10);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_0, (micrometers1 / 1) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_1, (micrometers1 / 10) % 10);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_1, (micrometers1 / 10) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_2, ((millimeters1 / 1) % 10) | 0x80);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_2, ((millimeters1 / 1) % 10) | 0x80);
   sleep_us(1);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_3, (millimeters1 / 10) % 10);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_3, (millimeters1 / 10) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_4, (millimeters1 / 100) % 10);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_4, (millimeters1 / 100) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_5, (millimeters1 / 1000) % 10);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_5, (millimeters1 / 1000) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_6, (millimeters1 / 10000) % 10);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_6, (millimeters1 / 10000) % 10);
   sleep_us(1);
-  segdisplay_write_command(spi0, 20, SEGDISPLAY_DIGIT_7, sign1 ? 0x0F : 0x0A);
+  segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_7, sign1 ? 0x0F : 0x0A);
   sleep_us(1);
 
   sleep_ms(1);
