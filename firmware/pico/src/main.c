@@ -7,7 +7,9 @@
 #include "hardware/timer.h"
 #include "encoder.pio.h"
 
+#ifdef OPENDRO_PICO_FIRMWARE_SEGDISPLAY
 #include <segdisplay/segdisplay.h>
+#endif
 
 enum {
   DIRECTION_NONE = 0,
@@ -50,7 +52,10 @@ volatile int prev1 = 0, prev2 = 0;
 #define AXIS_2_DIVISOR (1000000 / 10)
 
 const uint sm = 0;
+
+#ifdef OPENDRO_PICO_FIRMWARE_SEGDISPLAY
 segdisplay_t disp0, disp1;
+#endif
 
 void setup() {
   stdio_init_all();
@@ -67,6 +72,7 @@ void setup() {
   spi_init(spi0, 10000000);
   spi_set_format(spi0, 16, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
 
+#ifdef OPENDRO_PICO_FIRMWARE_SEGDISPLAY
   if ( ! segdisplay_init(&disp0, 0, 17)) {
     while (true) {
         // spin forever
@@ -100,6 +106,7 @@ void setup() {
     segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_6, 0xB);
     segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_7, 0xC);
   }
+#endif
 
   // give the encoder lamp time to warm up
   sleep_ms(200);
@@ -152,6 +159,7 @@ void loop() {
   printf("%s\n", buf1);
   printf("%s\n", buf2);
 
+#ifdef OPENDRO_PICO_FIRMWARE_SEGDISPLAY
   segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_0, (micrometers2 / 1) % 10);
   sleep_us(1);
   segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_1, (micrometers2 / 10) % 10);
@@ -185,6 +193,7 @@ void loop() {
   sleep_us(1);
   segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_7, sign1 ? 0x0F : 0x0A);
   sleep_us(1);
+#endif
 
   sleep_ms(1);
 }
