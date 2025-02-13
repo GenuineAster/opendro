@@ -50,6 +50,8 @@ bool segdisplay_init(segdisplay_t *display, int spi_num, int chip_select);
 /**
  * \brief Sends a command (one of SEGDISPLAY_COMMAND_*) with arg \ref arg
  * \note Commands SEGDISPLAY_DIGIT_n expect a Code B font codepoint. See MAX7219 documentation.
+ * \warning It is the caller's responsibility to ensure there is enough time for the MAX7219 to process
+ *   the given command, usually by sleeping between command writes.
  * \returns true on success, false on failure
  */
 bool segdisplay_write_command(segdisplay_t *display, uint8_t cmd, uint8_t arg);

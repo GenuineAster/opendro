@@ -24,6 +24,15 @@
 #include "hardware/spi.h"
 #endif
 
+static void microsleep(uint32_t micros) {
+#ifdef OPENDRO_PLATFORM_PICO
+    sleep_us(micros);
+#else
+    struct timespec duration = {.tv_sec = 0, .tv_nsec = micros * 1000};
+    nanosleep(&duration, NULL);
+#endif
+}
+
 bool segdisplay_init(segdisplay_t *display, int spi_num, int chip_select) {
     display->chip_select = chip_select;
 
@@ -112,9 +121,13 @@ bool segdisplay_init(segdisplay_t *display, int spi_num, int chip_select) {
 
     bool success = true;
     success = success && segdisplay_write_command(display, SEGDISPLAY_SHUT_DOWN, 0x01);
+    microsleep(1);
     success = success && segdisplay_write_command(display, SEGDISPLAY_TEST_DISPLAY, 0x00);
+    microsleep(1);
     success = success && segdisplay_write_command(display, SEGDISPLAY_DECODE_MODE, 0xFF);
+    microsleep(1);
     success = success && segdisplay_write_command(display, SEGDISPLAY_SCAN_LIMIT, 0x07);
+    microsleep(1);
     success = success && segdisplay_write_command(display, SEGDISPLAY_INTENSITY, 0x0F);
     return success;
 }
