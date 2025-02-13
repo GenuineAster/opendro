@@ -37,13 +37,6 @@ const int8_t lookup[16] = {
 
 volatile int32_t pulses1 = 0, pulses2 = 0;
 volatile int prev1 = 0, prev2 = 0;
-volatile int interrupt = 0;
-
-
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 32
-#define SCREEN_ADDRESS 0x3C
-#define SCREEN_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 
 #define AXIS_1_CLOCK_PIN 6
 #define AXIS_1_A_PIN 7
