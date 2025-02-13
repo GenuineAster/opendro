@@ -81,6 +81,26 @@ void setup() {
     }
   }
 
+  // set displays to some known state
+  {
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_0, 0x0);
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_1, 0x0);
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_2, 0x0);
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_3, 0x0);
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_4, 0xD);
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_5, 0xD);
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_6, 0xB);
+    segdisplay_write_command(&disp0, SEGDISPLAY_DIGIT_7, 0xC);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_0, 0x0);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_1, 0x0);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_2, 0x0);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_3, 0x0);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_4, 0xD);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_5, 0xD);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_6, 0xB);
+    segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_7, 0xC);
+  }
+
   // Base pin to connect the A phase of the encoder.
   // The B phase must be connected to the next pin
   const uint AXIS_1_PIN_AB = AXIS_1_A_PIN;
