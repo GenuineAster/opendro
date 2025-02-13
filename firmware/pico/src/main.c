@@ -101,6 +101,9 @@ void setup() {
     segdisplay_write_command(&disp1, SEGDISPLAY_DIGIT_7, 0xC);
   }
 
+  // give the encoder lamp time to warm up
+  sleep_ms(200);
+
   // Base pin to connect the A phase of the encoder.
   // The B phase must be connected to the next pin
   const uint AXIS_1_PIN_AB = AXIS_1_A_PIN;
